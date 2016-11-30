@@ -351,7 +351,30 @@ public class MyPicture extends Picture
         // choose the smallest of the carrier image and hidden image height
     
         int height = Math.min(picHeight, hiddenHeight);
-    
+        
+        ArrayList<ArrayList<Pixel>> pictureArray = new ArrayList<ArrayList<Pixel>>();
+        System.out.println("Storing to arraylist~");
+         // store rows in arraylist
+        for(int i = 0; i < height; i++)
+        {
+           ArrayList<Pixel> tempRow = new ArrayList<Pixel>();
+            for(int j = 0; j < width; j++)
+            {
+                System.out.println(pixelArray2[j][i]);
+                 tempRow.add(pixelArray2[j][i]);
+            }
+           pictureArray.add(tempRow);
+        }
+        System.out.println("Done");
+        // Jumble the image
+        for(int i = 0; i < height; i++)
+        {
+            for(int j = 0; j < width; j++)
+            {
+                 pixelArray2[((10 * i) + j) % width][i] = pictureArray.get(i).get(j);
+            }
+        }
+        
         // loop through the carrier image pixels and shift image into higher bits
         for (int i = 0; i < picWidth; i++)
             for (int j = 0; j < picHeight; j++)

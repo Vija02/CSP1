@@ -1,5 +1,5 @@
 #Greenfoot properties
-#Wed Nov 23 09:16:17 GMT 2016
+#Wed Nov 30 10:32:41 GMT 2016
 editor.fx.0.height=700
 target2.width=80
 target8.name=Circle
@@ -73,9 +73,9 @@ target2.showInterface=false
 dependency1.from=Picture
 target5.editor.y=22
 target5.editor.x=59
-mainWindow.y=47
+mainWindow.y=87
 editor.swing.0.y=0
-mainWindow.x=320
+mainWindow.x=255
 editor.swing.0.x=0
 target5.showInterface=true
 target8.showInterface=false
