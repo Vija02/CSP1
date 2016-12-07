@@ -29,7 +29,17 @@ public class MyPicture extends Picture
     {
         super(filename);
     }
-
+    
+   public void hide()
+   {
+       hideXbitImage(4);
+   }
+   
+   public void restore()
+   {
+       restoreXbitImage(4);
+   }
+   
    /**
      * Method to extract hidden image from lowest x bits.
      * 
@@ -37,7 +47,7 @@ public class MyPicture extends Picture
      * with the same dimensions as the displayed image.
      * 
      */
-    public void restoreXbitImage(int bit)
+    private void restoreXbitImage(int bit)
     {
         Pixel[] pixelArray = this.getPixels();
         
@@ -75,13 +85,48 @@ public class MyPicture extends Picture
         }
     }
     
+   private void jumbleImage(int width, int height, Pixel[][] pixelArray2)
+   {
+       ArrayList<ArrayList<Pixel>> pictureArray = new ArrayList<ArrayList<Pixel>>();
+        System.out.println("Storing to arraylist~");
+         // store rows in arraylist
+        for(int i = 0; i < height; i++)
+        {
+           ArrayList<Pixel> tempRow = new ArrayList<Pixel>();
+            for(int j = 0; j < width; j++)
+            {
+                System.out.println(pixelArray2[j][i]);
+                 tempRow.add(pixelArray2[j][i]);
+            }
+           pictureArray.add(tempRow);
+        }
+        System.out.println("Done");
+        // Jumble the image
+        for(int i = 0; i < height; i++)
+        {
+            for(int j = 0; j < width; j++)
+            {
+                 pixelArray2[((10 * i) + j) % width][i] = pictureArray.get(i).get(j);
+            }
+        }
+
+        // Jumble the image
+        for(int i = 0; i < height; i++)
+        {
+            for(int j = 0; j < width; j++)
+            {
+                 pixelArray2[j][((10 * j) + i) % height] = pictureArray.get(i).get(j);
+            }
+        }
+   }
+   
     /**
      * Method to hide newBg image in the low x bits of this picture.
      * 
      * This method uses 2D arrays and use different sized images.
      * 
      */
-    public void hideXbitImage(int bit)
+    private void hideXbitImage(int bit)
     {
         JFileChooser chooser = new JFileChooser(".");
         if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) return;
@@ -128,29 +173,8 @@ public class MyPicture extends Picture
     
         int height = Math.min(picHeight, hiddenHeight);
         
-        ArrayList<ArrayList<Pixel>> pictureArray = new ArrayList<ArrayList<Pixel>>();
-        System.out.println("Storing to arraylist~");
-         // store rows in arraylist
-        for(int i = 0; i < height; i++)
-        {
-           ArrayList<Pixel> tempRow = new ArrayList<Pixel>();
-            for(int j = 0; j < width; j++)
-            {
-                System.out.println(pixelArray2[j][i]);
-                 tempRow.add(pixelArray2[j][i]);
-            }
-           pictureArray.add(tempRow);
-        }
-        System.out.println("Done");
-        // Jumble the image
-        for(int i = 0; i < height; i++)
-        {
-            for(int j = 0; j < width; j++)
-            {
-                 pixelArray2[((10 * i) + j) % width][i] = pictureArray.get(i).get(j);
-            }
-        }
-        
+        jumbleImage(width, height, pixelArray2);
+       
         // loop through the carrier image pixels and shift image into higher bits
         for (int i = 0; i < picWidth; i++)
             for (int j = 0; j < picHeight; j++)
@@ -344,4 +368,5 @@ public class MyPicture extends Picture
     {
 
     }
+
 }
