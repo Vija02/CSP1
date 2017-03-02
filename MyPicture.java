@@ -123,7 +123,7 @@ public class MyPicture extends Picture
     */
   private Pixel[] circleArray(Pixel[] arr, int by)
   {
-    System.out.println(by);
+	by = by % arr.length;
     for(int i=0; i<arr.length; i++){
     	if(i+by >= arr.length){
       	if(arr.length % by == 0){
