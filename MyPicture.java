@@ -89,7 +89,7 @@ public class MyPicture extends Picture
     * Method to swap a pixel array from a to b
     */
   private void swap(Pixel[] array, int a, int b){
-  	Pixel temp = array[a];
+    Pixel temp = array[a];
     array[a] = array[b];
     array[b] = temp;
   }
@@ -98,8 +98,7 @@ public class MyPicture extends Picture
     * Wrapper for slice array
     */
   private Pixel[] slice(Pixel[] arr, int a, int b){
-    return arr;
-  	// return Arrays.copyOfRange(arr, a, b);
+    return Arrays.copyOfRange(arr, a, b);
   }
 
   /**
@@ -123,30 +122,32 @@ public class MyPicture extends Picture
     */
   private Pixel[] circleArray(Pixel[] arr, int by)
   {
-	by = by % arr.length;
+    by = by % arr.length;
     for(int i=0; i<arr.length; i++){
-    	if(i+by >= arr.length){
-      	if(arr.length % by == 0){
-        	return arr;
+      if(i+by >= arr.length){
+        if(arr.length % by == 0){
+            return arr;
         }
         else{
           // System.out.println(by + " " + arr.length);
-        	arr = concat(circleArray(slice(arr, 0, by), by - (arr.length % by)), slice(arr, by, arr.length));
-        	// arr = circleArray(slice(arr, 0, by), by - (arr.length % by)).concat(slice(arr, by, arr.length));
+            arr = concat(circleArray(slice(arr, 0, by), by - (arr.length % by)), slice(arr, by, arr.length));
+            // arr = circleArray(slice(arr, 0, by), by - (arr.length % by)).concat(slice(arr, by, arr.length));
         }
-      	return arr;
+        return arr;
       }
-    	swap(arr, i%(by), (i+by)%(arr.length));
+      swap(arr, i%(by == 0? 1 : by), (i+by)%(arr.length));
     }
     return arr;
   }
 
   private void jumbleImage(int width, int height, Pixel[][] pixelArray2)
   {
+    System.out.println("Start");
     for (int i=0; i<pixelArray2.length; i++) {
       // Circle the array progressively
-      circleArray(pixelArray2[i], 10 * (i+1));
+      circleArray(pixelArray2[i], 50 * (i+1));
     }
+    System.out.println("Done");
      /*
        ArrayList<ArrayList<Pixel>> pictureArray = new ArrayList<ArrayList<Pixel>>();
         System.out.println("Storing to arraylist~");
@@ -170,9 +171,9 @@ public class MyPicture extends Picture
                  pixelArray2[((10 * i) + j) % width][i] = pictureArray.get(i).get(j);
             }
         }
-		System.out.println("Storing to arraylist~");
+        System.out.println("Storing to arraylist~");
 
-		pictureArray = new ArrayList<ArrayList<Pixel>>();
+        pictureArray = new ArrayList<ArrayList<Pixel>>();
          // store rows in arraylist
         for(int i = 0; i < height; i++)
         {
@@ -197,7 +198,7 @@ public class MyPicture extends Picture
   }
    private void unjumbleImage(int width, int height, Pixel[][] pixelArray2)
    {
-		// TODO: change
+        // TODO: change
        ArrayList<ArrayList<Pixel>> pictureArray = new ArrayList<ArrayList<Pixel>>();
         System.out.println("Storing to arraylist~");
          // store rows in arraylist
@@ -220,9 +221,9 @@ public class MyPicture extends Picture
                  pixelArray2[((10 * i) + j) % width][i] = pictureArray.get(i).get(j);
             }
         }
-		System.out.println("Storing to arraylist~");
+        System.out.println("Storing to arraylist~");
 
-		pictureArray = new ArrayList<ArrayList<Pixel>>();
+        pictureArray = new ArrayList<ArrayList<Pixel>>();
          // store rows in arraylist
         for(int i = 0; i < height; i++)
         {
