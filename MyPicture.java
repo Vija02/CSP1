@@ -118,6 +118,7 @@ public class MyPicture extends Picture
 
   /**
     * Method to circle the array to the right by x
+    * The basic principle of how it works is just by swapping things around to the right place
     * (Took longer than i would like to admit)
     */
   private Pixel[] circleArray(Pixel[] arr, int by)
@@ -129,9 +130,7 @@ public class MyPicture extends Picture
             return arr;
         }
         else{
-          // System.out.println(by + " " + arr.length);
             arr = concat(circleArray(slice(arr, 0, by), by - (arr.length % by)), slice(arr, by, arr.length));
-            // arr = circleArray(slice(arr, 0, by), by - (arr.length % by)).concat(slice(arr, by, arr.length));
         }
         return arr;
       }
@@ -140,62 +139,50 @@ public class MyPicture extends Picture
     return arr;
   }
 
-  private void jumbleImage(int width, int height, Pixel[][] pixelArray2)
+  /**
+    * Method to circle the array to the right by x
+    * The basic principle of how it works is just by swapping things around to the right place
+    * (Took longer than i would like to admit)
+    */
+  private Pixel[] circleArrayInverseMajor(Pixel[] arr, int by)
   {
-    System.out.println("Start");
+    by = by % arr.length;
+    for(int i=0; i<arr.length; i++){
+      if(i+by >= arr.length){
+        if(arr.length % by == 0){
+            return arr;
+        }
+        else{
+            arr = concat(circleArray(slice(arr, 0, by), by - (arr.length % by)), slice(arr, by, arr.length));
+        }
+        return arr;
+      }
+      swap(arr, i%(by == 0? 1 : by), (i+by)%(arr.length));
+    }
+    return arr;
+  }
+
+  /**
+    * Jumble the image given the array in the 2 axis
+    */
+  private void jumbleImage(Pixel[][] pixelArray2, Pixel[][] pixelArray2RowMajor)
+  {
+    // Vertical
     for (int i=0; i<pixelArray2.length; i++) {
       // Circle the array progressively
       circleArray(pixelArray2[i], 50 * (i+1));
     }
+    // Horizontal
+    for (int i=0; i<pixelArray2RowMajor.length; i++) {
+      // Circle the array progressively
+      circleArrayInverseMajor(pixelArray2RowMajor[i], 50 * (i+1));
+    }
     System.out.println("Done");
-     /*
-       ArrayList<ArrayList<Pixel>> pictureArray = new ArrayList<ArrayList<Pixel>>();
-        System.out.println("Storing to arraylist~");
-         // store rows in arraylist
-        for(int i = 0; i < height; i++)
-        {
-           ArrayList<Pixel> tempRow = new ArrayList<Pixel>();
-            for(int j = 0; j < width; j++)
-            {
-                System.out.println(pixelArray2[j][i]);
-                 tempRow.add(pixelArray2[j][i]);
-            }
-           pictureArray.add(tempRow);
-        }
-        System.out.println("Done");
-        // Jumble the image
-        for(int i = 0; i < height; i++)
-        {
-            for(int j = 0; j < width; j++)
-            {
-                 pixelArray2[((10 * i) + j) % width][i] = pictureArray.get(i).get(j);
-            }
-        }
-        System.out.println("Storing to arraylist~");
-
-        pictureArray = new ArrayList<ArrayList<Pixel>>();
-         // store rows in arraylist
-        for(int i = 0; i < height; i++)
-        {
-           ArrayList<Pixel> tempRow = new ArrayList<Pixel>();
-            for(int j = 0; j < width; j++)
-            {
-                System.out.println(pixelArray2[j][i]);
-                 tempRow.add(pixelArray2[j][i]);
-            }
-           pictureArray.add(tempRow);
-        }
-        System.out.println("Done");
-        // Jumble the image
-        for(int i = 0; i < height; i++)
-        {
-            for(int j = 0; j < width; j++)
-            {
-                 pixelArray2[j][((10 * j) + i) % height] = pictureArray.get(i).get(j);
-            }
-        }
-        */
   }
+
+  /**
+    * Unjumble the image
+    */
    private void unjumbleImage(int width, int height, Pixel[][] pixelArray2)
    {
         // TODO: change
@@ -279,6 +266,8 @@ public class MyPicture extends Picture
         // declare a 2D Pixel array for the hidden image
 
         Pixel[][] pixelArray2 = hiddenImage.get2DPixels();
+        Pixel[][] pixelArray2RowMajor = hiddenImage.get2DPixelsRowMajor();
+
         Pixel pixelObj2 = null;
 
         int[][] redChannel2   = new int [picWidth][picHeight];
@@ -299,7 +288,7 @@ public class MyPicture extends Picture
 
         int height = Math.min(picHeight, hiddenHeight);
 
-        jumbleImage(width, height, pixelArray2);
+        jumbleImage(pixelArray2, pixelArray2RowMajor);
 
         // loop through the carrier image pixels and shift image into higher bits
         for (int i = 0; i < picWidth; i++)
@@ -467,7 +456,7 @@ public class MyPicture extends Picture
         }
     }
 
-    public void saveImageFile()
+    private void saveImageFile()
     {
         try
         {
@@ -490,9 +479,9 @@ public class MyPicture extends Picture
      *
      */
 
-    public void act()
-    {
-
-    }
+    // public void act()
+    // {
+    //
+    // }
 
 }
