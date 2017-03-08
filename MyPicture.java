@@ -44,6 +44,7 @@ public class MyPicture extends Picture
   public void restore()
   {
     restoreXbitImage(4);
+    unjumbleImage(this.get2DPixels());
   }
 
   public void restorePlain()
@@ -190,7 +191,7 @@ public class MyPicture extends Picture
          theArray[j] = pixelArray2[j][i];
        }
        // Circle and Store the result
-       Pixel[] result = circleArray(theArray, pixelArray2.length - (horizontalShiftAmount * (i+1)));
+       Pixel[] result = circleArray(theArray, pixelArray2.length - ((horizontalShiftAmount * (i+1)) % pixelArray2.length));
        // Then store to actual array
        for (int j=0; j<pixelArray2.length; j++) {
          pixelArray2[j][i] = result[j];
@@ -199,7 +200,7 @@ public class MyPicture extends Picture
      // Vertical
      for (int i=0; i<pixelArray2.length; i++) {
        // Circle the array progressively
-       circleArray(pixelArray2[i], pixelArray2[0].length - (verticalShiftAmount * (i+1)));
+       circleArray(pixelArray2[i], pixelArray2[0].length - ((verticalShiftAmount * (i+1) % pixelArray2[0].length)));
      }
    }
     /**
