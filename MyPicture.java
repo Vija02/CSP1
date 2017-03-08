@@ -12,6 +12,8 @@ public class MyPicture extends Picture
 {
   private final static int MULTIPLIER1  =  263;
   private final static int MULTIPLIER2  =  419;
+  private static int verticalShiftAmount = 43;
+  private static int horizontalShiftAmount = 50;
 
   /**
    * Constructor that takes no arguments
@@ -123,41 +125,19 @@ public class MyPicture extends Picture
     */
   private Pixel[] circleArray(Pixel[] arr, int by)
   {
-    by = by % arr.length;
-    for(int i=0; i<arr.length; i++){
-      if(i+by >= arr.length){
-        if(arr.length % by == 0){
+    int length = arr.length;
+    by = by % length;
+    for(int i=0; i<length; i++){
+      if(i+by >= length){
+        if(length % by == 0){
             return arr;
         }
         else{
-            arr = concat(circleArray(slice(arr, 0, by), by - (arr.length % by)), slice(arr, by, arr.length));
+            arr = concat(circleArray(slice(arr, 0, by), by - (length % by)), slice(arr, by, length));
         }
         return arr;
       }
-      swap(arr, i%(by == 0? 1 : by), (i+by)%(arr.length));
-    }
-    return arr;
-  }
-
-  /**
-    * Method to circle the array to the right by x
-    * The basic principle of how it works is just by swapping things around to the right place
-    * (Took longer than i would like to admit)
-    */
-  private Pixel[] circleArrayInverseMajor(Pixel[] arr, int by)
-  {
-    by = by % arr.length;
-    for(int i=0; i<arr.length; i++){
-      if(i+by >= arr.length){
-        if(arr.length % by == 0){
-            return arr;
-        }
-        else{
-            arr = concat(circleArray(slice(arr, 0, by), by - (arr.length % by)), slice(arr, by, arr.length));
-        }
-        return arr;
-      }
-      swap(arr, i%(by == 0? 1 : by), (i+by)%(arr.length));
+      swap(arr, i%(by == 0? 1 : by), (i+by)%(length));
     }
     return arr;
   }
@@ -165,72 +145,35 @@ public class MyPicture extends Picture
   /**
     * Jumble the image given the array in the 2 axis
     */
-  private void jumbleImage(Pixel[][] pixelArray2, Pixel[][] pixelArray2RowMajor)
+  private void jumbleImage(Pixel[][] pixelArray2)
   {
+    System.out.println(pixelArray2.length + " " + pixelArray2[0].length);
     // Vertical
     for (int i=0; i<pixelArray2.length; i++) {
       // Circle the array progressively
-      circleArray(pixelArray2[i], 43 * (i+1));
+      circleArray(pixelArray2[i], verticalShiftAmount * (i+1));
     }
     // Horizontal
-    for (int i=0; i<pixelArray2RowMajor.length; i++) {
-      // Circle the array progressively
-      circleArrayInverseMajor(pixelArray2RowMajor[i], 50 * (i+1));
+    for (int i=0; i<pixelArray2[0].length; i++) {
+      // Change the row major array
+      Pixel[] theArray = new Pixel[pixelArray2.length];
+      for (int j=0; j<pixelArray2.length; j++) {
+        theArray[j] = pixelArray2[j][i];
+      }
+      // Circle and Store the result
+      Pixel[] result = circleArray(theArray, horizontalShiftAmount * (i+1));
+      // Then store to actual array
+      for (int j=0; j<pixelArray2.length; j++) {
+        pixelArray2[j][i] = result[j];
+      }
     }
-    System.out.println("Done");
   }
 
   /**
     * Unjumble the image
     */
-   private void unjumbleImage(int width, int height, Pixel[][] pixelArray2)
+   private void unjumbleImage(Pixel[][] pixelArray2)
    {
-        // TODO: change
-       ArrayList<ArrayList<Pixel>> pictureArray = new ArrayList<ArrayList<Pixel>>();
-        System.out.println("Storing to arraylist~");
-         // store rows in arraylist
-        for(int i = 0; i < height; i++)
-        {
-           ArrayList<Pixel> tempRow = new ArrayList<Pixel>();
-            for(int j = 0; j < width; j++)
-            {
-                System.out.println(pixelArray2[j][i]);
-                 tempRow.add(pixelArray2[j][i]);
-            }
-           pictureArray.add(tempRow);
-        }
-        System.out.println("Done");
-        // Jumble the image
-        for(int i = 0; i < height; i++)
-        {
-            for(int j = 0; j < width; j++)
-            {
-                 pixelArray2[((10 * i) + j) % width][i] = pictureArray.get(i).get(j);
-            }
-        }
-        System.out.println("Storing to arraylist~");
-
-        pictureArray = new ArrayList<ArrayList<Pixel>>();
-         // store rows in arraylist
-        for(int i = 0; i < height; i++)
-        {
-           ArrayList<Pixel> tempRow = new ArrayList<Pixel>();
-            for(int j = 0; j < width; j++)
-            {
-                System.out.println(pixelArray2[j][i]);
-                 tempRow.add(pixelArray2[j][i]);
-            }
-           pictureArray.add(tempRow);
-        }
-        System.out.println("Done");
-        // Jumble the image
-        for(int i = 0; i < height; i++)
-        {
-            for(int j = 0; j < width; j++)
-            {
-                 pixelArray2[j][((10 * j) + i) % height] = pictureArray.get(i).get(j);
-            }
-        }
 
    }
     /**
@@ -288,7 +231,7 @@ public class MyPicture extends Picture
 
         int height = Math.min(picHeight, hiddenHeight);
 
-        jumbleImage(pixelArray2, pixelArray2RowMajor);
+        jumbleImage(pixelArray2);
 
         // loop through the carrier image pixels and shift image into higher bits
         for (int i = 0; i < picWidth; i++)
