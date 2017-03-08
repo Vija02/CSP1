@@ -170,7 +170,7 @@ public class MyPicture extends Picture
     // Vertical
     for (int i=0; i<pixelArray2.length; i++) {
       // Circle the array progressively
-      circleArray(pixelArray2[i], 50 * (i+1));
+      circleArray(pixelArray2[i], 43 * (i+1));
     }
     // Horizontal
     for (int i=0; i<pixelArray2RowMajor.length; i++) {
