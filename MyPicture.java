@@ -12,8 +12,11 @@ public class MyPicture extends Picture
 {
   private final static int MULTIPLIER1  =  263;
   private final static int MULTIPLIER2  =  419;
+
   private static int verticalShiftAmount = 43;
   private static int horizontalShiftAmount = 50;
+
+  private Pixel[][] jumbledImage;
 
   /**
    * Constructor that takes no arguments
@@ -39,6 +42,11 @@ public class MyPicture extends Picture
   }
 
   public void restore()
+  {
+    restoreXbitImage(4);
+  }
+
+  public void restorePlain()
   {
     restoreXbitImage(4);
   }
@@ -147,7 +155,6 @@ public class MyPicture extends Picture
     */
   private void jumbleImage(Pixel[][] pixelArray2)
   {
-    System.out.println(pixelArray2.length + " " + pixelArray2[0].length);
     // Vertical
     for (int i=0; i<pixelArray2.length; i++) {
       // Circle the array progressively
@@ -167,6 +174,7 @@ public class MyPicture extends Picture
         pixelArray2[j][i] = result[j];
       }
     }
+    jumbledImage = pixelArray2;
   }
 
   /**
@@ -174,7 +182,25 @@ public class MyPicture extends Picture
     */
    private void unjumbleImage(Pixel[][] pixelArray2)
    {
-
+     // Horizontal
+     for (int i=0; i<pixelArray2[0].length; i++) {
+       // Change the row major array
+       Pixel[] theArray = new Pixel[pixelArray2.length];
+       for (int j=0; j<pixelArray2.length; j++) {
+         theArray[j] = pixelArray2[j][i];
+       }
+       // Circle and Store the result
+       Pixel[] result = circleArray(theArray, pixelArray2.length - (horizontalShiftAmount * (i+1)));
+       // Then store to actual array
+       for (int j=0; j<pixelArray2.length; j++) {
+         pixelArray2[j][i] = result[j];
+       }
+     }
+     // Vertical
+     for (int i=0; i<pixelArray2.length; i++) {
+       // Circle the array progressively
+       circleArray(pixelArray2[i], pixelArray2[0].length - (verticalShiftAmount * (i+1)));
+     }
    }
     /**
      * Method to hide newBg image in the low x bits of this picture.
