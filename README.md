@@ -1,12 +1,12 @@
 # CSP1
 Computer science project 1
 
-#Introduction
+## Introduction
 This project takes an image and hide it inside another image using a technique called stenography.   
 More specifically, it uses low bit hiding. In addition to that, the image being hidden is scrambled in a certain way.  
 This ensures that even if the low bit image is retrieved, the picture will not make any sense  
 
-#Using this project
+## Using this project
 To test this project, clone this project and open it using greenfoot.  
 To simply download, look at the green button on the top right of this page. It should say clone or download.  
 Alternatively, you can use git and enter `git clone https://github.com/Vija02/CSP1.git`
