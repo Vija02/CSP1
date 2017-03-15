@@ -16,8 +16,6 @@ public class MyPicture extends Picture
   private static int verticalShiftAmount = 43;
   private static int horizontalShiftAmount = 50;
 
-  private Pixel[][] jumbledImage;
-
   /**
    * Constructor that takes no arguments
    */
@@ -44,6 +42,11 @@ public class MyPicture extends Picture
   public void restore()
   {
     restoreXbitImage(4);
+    unjumbleImage(this.get2DPixels());
+  }
+
+  public void unjumble()
+  {
     unjumbleImage(this.get2DPixels());
   }
 
@@ -106,6 +109,15 @@ public class MyPicture extends Picture
   }
 
   /**
+    * Method to swap a pixel array from a to b by painting
+    */
+  private void swapPaint(Pixel[] array, int a, int b){
+    Color temp = array[a].getColor();
+    array[a].setColor(array[b].getColor());
+    array[b].setColor(temp);
+  }
+
+  /**
     * Wrapper for slice array
     */
   private Pixel[] slice(Pixel[] arr, int a, int b){
@@ -152,14 +164,47 @@ public class MyPicture extends Picture
   }
 
   /**
+    * Method to circle the array to the right by x
+    * The basic principle of how it works is just by swapping things around to the right place
+    * This method will swap by painting them
+    */
+  private Pixel[] circleArrayPaint(Pixel[] arr, int by)
+  {
+    int length = arr.length;
+    by = by % length;
+    for(int i=0; i<length; i++){
+      if(i+by >= length){
+        if(length % by == 0){
+            return arr;
+        }
+        else{
+            arr = concat(circleArrayPaint(slice(arr, 0, by), by - (length % by)), slice(arr, by, length));
+        }
+        return arr;
+      }
+      swapPaint(arr, i%(by == 0? 1 : by), (i+by)%(length));
+    }
+    return arr;
+  }
+
+  /**
     * Jumble the image given the array in the 2 axis
     */
   private void jumbleImage(Pixel[][] pixelArray2)
   {
     // Vertical
     for (int i=0; i<pixelArray2.length; i++) {
-      // Circle the array progressively
-      circleArray(pixelArray2[i], verticalShiftAmount * (i+1));
+      // Change the row major array
+      Pixel[] theArray = new Pixel[pixelArray2[0].length];
+      for (int j=0; j<pixelArray2[0].length; j++) {
+        theArray[j] = pixelArray2[i][j];
+      }
+      // Circle and Store the result
+      Pixel[] result = circleArray(theArray, verticalShiftAmount * (i+1));
+      // Then store to actual array
+      for (int j=0; j<pixelArray2[0].length; j++) {
+        pixelArray2[i][j] = result[j];
+      }
     }
     // Horizontal
     for (int i=0; i<pixelArray2[0].length; i++) {
@@ -175,7 +220,6 @@ public class MyPicture extends Picture
         pixelArray2[j][i] = result[j];
       }
     }
-    jumbledImage = pixelArray2;
   }
 
   /**
@@ -191,16 +235,17 @@ public class MyPicture extends Picture
          theArray[j] = pixelArray2[j][i];
        }
        // Circle and Store the result
-       Pixel[] result = circleArray(theArray, pixelArray2.length - ((horizontalShiftAmount * (i+1)) % pixelArray2.length));
+       Pixel[] result = circleArrayPaint(theArray, pixelArray2.length - ((horizontalShiftAmount * (i+1)) % pixelArray2.length));
        // Then store to actual array
        for (int j=0; j<pixelArray2.length; j++) {
          pixelArray2[j][i] = result[j];
        }
      }
+
      // Vertical
      for (int i=0; i<pixelArray2.length; i++) {
        // Circle the array progressively
-       circleArray(pixelArray2[i], pixelArray2[0].length - ((verticalShiftAmount * (i+1) % pixelArray2[0].length)));
+       circleArrayPaint(pixelArray2[i], pixelArray2[0].length - ((verticalShiftAmount * (i+1)) % pixelArray2[0].length));
      }
    }
     /**
